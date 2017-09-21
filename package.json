@@ -6,6 +6,7 @@
   "license": "BSD-3-Clause",
   "repository": "https://github.com/getsentry/probot-report.git",
   "scripts": {
+    "lint": "eslint src",
     "start": "probot run ./index.js",
     "test": "mocha && standard"
   },
@@ -16,7 +17,9 @@
     "expect": "^1.20.2",
     "localtunnel": "^1.8.2",
     "mocha": "^3.2.0",
-    "standard": "^10.0.3"
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb-base": "^11.3.2",
+    "eslint-plugin-import": "^2.7.0"
   },
   "engines": {
     "node": ">= 7.7.0",
