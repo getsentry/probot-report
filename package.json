@@ -1,0 +1,25 @@
+{
+  "name": "probot-pr-reminder",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Jan Michael Auer <jan.auer@sentry.io>",
+  "license": "ISC",
+  "repository": "https://github.com/getsentry/probot-pr-reminder.git",
+  "scripts": {
+    "start": "probot run ./index.js",
+    "test": "mocha && standard"
+  },
+  "dependencies": {
+    "probot": "^0.7.2"
+  },
+  "devDependencies": {
+    "expect": "^1.20.2",
+    "localtunnel": "^1.8.2",
+    "mocha": "^3.2.0",
+    "standard": "^10.0.3"
+  },
+  "engines": {
+    "node": ">= 7.7.0",
+    "npm": ">= 4.0.0"
+  }
+}
