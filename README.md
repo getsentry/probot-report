@@ -1,6 +1,6 @@
-# probot-pr-reminder
+# Probot: Report
 
-> a GitHub App built with [probot](https://github.com/probot/probot) that 
+> a GitHub App built with [probot](https://github.com/probot/probot) that sends out periodic reports
 
 ## Setup
 

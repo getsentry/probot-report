@@ -1,10 +1,10 @@
 {
-  "name": "probot-pr-reminder",
+  "name": "probot-report",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sends out periodic reports via email",
   "author": "Jan Michael Auer <jan.auer@sentry.io>",
-  "license": "ISC",
-  "repository": "https://github.com/getsentry/probot-pr-reminder.git",
+  "license": "BSD-3-Clause",
+  "repository": "https://github.com/getsentry/probot-report.git",
   "scripts": {
     "start": "probot run ./index.js",
     "test": "mocha && standard"
