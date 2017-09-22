@@ -67,15 +67,20 @@ class Reporter {
 
 const reporters = {};
 
-async function addInstallation(github, installation) {
-  const id = installation.account.id;
+function getReporter(context) {
+  const { owner } = context.repo();
+  return reporters[owner];
+}
+
+function addReporter(github, installation) {
+  const id = installation.account.login;
   if (reporters[id] == null) {
     reporters[id] = new Reporter(github, installation);
   }
 }
 
-async function removeInstallation(installation) {
-  const id = installation.account.id;
+function removeReporter(installation) {
+  const id = installation.account.login;
   const reporter = reporters[id];
   if (reporter) {
     reporter.teardown();
@@ -89,19 +94,31 @@ async function setupRobot(robot) {
   github.paginate(github.apps.getInstallations({ per_page: 100 }), (result) => {
     result.data.forEach(async (installation) => {
       const installationGithub = await robot.auth(installation.id);
-      addInstallation(installationGithub, installation);
+      addReporter(installationGithub, installation);
     });
   });
 
-  robot.on('installation.created', async (context) => {
-    addInstallation(context.github, context.payload.installation);
+  robot.on('installation.created', (context) => {
+    addReporter(context.github, context.payload.installation);
   });
 
-  robot.on('installation.deleted', async (context) => {
-    removeInstallation(context.payload.installation);
+  robot.on('installation.deleted', (context) => {
+    removeReporter(context.payload.installation);
   });
 
-  // TODO(ja): Listen for new PR review requests...
+  robot.on('member.added', (context) => {
+    const reporter = getReporter(context);
+    if (reporter) {
+      reporter.addUser(context.payload.member);
+    }
+  });
+
+  robot.on('member.removed', (context) => {
+    const reporter = getReporter(context);
+    if (reporter) {
+      reporter.removeUser(context.payload.member);
+    }
+  });
 }
 
 module.exports = setupRobot;
