@@ -16,6 +16,8 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "node-schedule": "^1.2.5",
+    "nodemailer": "^4.1.0",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "probot": "^0.7.2"
   },
   "devDependencies": {
