@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "js-yaml": "^3.10.0",
+    "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "probot": "^0.7.2"
   },
