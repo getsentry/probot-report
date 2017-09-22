@@ -1,5 +1,5 @@
 const Reporter = require('./lib/reporter');
-const Config = require('./lib/config');
+const { loadConfig } = require('./lib/config');
 
 /**
  * Global registry of reporters for each installation.
@@ -14,8 +14,7 @@ function getReporter(context) {
 async function addReporter(github, installation) {
   const id = installation.account.login;
   if (reporters[id] == null) {
-    const config = await Config.loadConfig(github, installation.account);
-    Config.writeConfig(github, installation.account, config);
+    const config = await loadConfig(github, installation.account);
     reporters[id] = new Reporter(github, installation, config);
   }
 }
