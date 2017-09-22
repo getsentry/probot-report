@@ -16,17 +16,29 @@ class Reporter {
     this.setupUsers();
   }
 
-  addUser(user) {
+  async getUserDetails(user) {
+    const response = await this.github.users.getById({ id: user.id });
+    return response.data;
+  }
+
+  async addUser(user) {
     if (user.type !== TYPE_USER) {
+      // TODO: Warn
       return;
     }
+
+    if (this.users[user.id]) {
+      return;
+    }
+
+    const details = await this.getUserDetails(user);
 
     this.users[user.id] = {
       id: user.id,
       login: user.login,
+      email: details.email,
     };
 
-    // TODO: Get and update email addresses
     // TODO: Get and update timezone
     // TODO: Get notification schedule
     // TODO: Schedule notifications for this user
@@ -45,11 +57,12 @@ class Reporter {
 
     if (targetType === TYPE_ORGANIZATION) {
       const request = this.github.orgs.getMembers({ org: account.login, per_page: 100 });
+      // TODO: Looks like addUser is not executed in parallel
       this.github.paginate(request, result => result.data.forEach(user => this.addUser(user)));
     } else if (targetType === TYPE_USER) {
       this.addUser(account);
     } else {
-      // TODO: Log a warning
+      // TODO: Warn
     }
   }
 
