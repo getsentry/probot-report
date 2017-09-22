@@ -13,37 +13,24 @@ const TYPE_USER = 'User';
  */
 const TYPE_ORGANIZATION = 'Organization';
 
+/**
+ * Default repository to look for organization-wide settings.
+ * Can be overridden with the SETTINGS_REPO environment variable.
+ */
+const DEFAULT_SETTINGS_REPO = 'probot-settings';
+
+/**
+ * Default path of the config file within the settings repo.
+ * Can be overridden with the SETTINGS_PATH environment variable.
+ */
+const DEFAULT_SETTINGS_PATH = '.github/report.yml';
+
 class Reporter {
-  constructor(github, installation) {
+  constructor(github, installation, config) {
     this.github = github;
     this.installation = installation;
+    this.config = { ...defaults, ...config };
     this.setupUsers();
-    this.setupConfig();
-  }
-
-  async setupConfig() {
-    this.config = await this.getConfig({
-      owner: 'getsentry',
-      repo: 'sentry-probot',
-    });
-    this.config = Object.assign({}, defaults, this.config);
-    console.log(this.config);
-    // TODO(hazat): This is async so we don't have to config right away
-  }
-
-  async getConfig(configRepo) {
-    try {
-      const res = await this.github.repos.getContent({
-        owner: configRepo.owner,
-        repo: configRepo.repo,
-        path: '.github/config.yml',
-      });
-      const config = yaml.safeLoad(Buffer.from(res.data.content, 'base64').toString()) || {};
-      return Object.assign({}, config);
-    } catch (err) {
-      // TODO(hazat): Throw error
-    }
-    return {};
   }
 
   async getDetailsFor(user) {
@@ -137,15 +124,28 @@ class Reporter {
 
 const reporters = {};
 
+async function loadConfig(account) {
+  try {
+    const owner = account.login;
+    const repo = process.env.SETTINGS_REPO || DEFAULT_SETTINGS_REPO;
+    const path = process.env.SETTINGS_PATH || DEFAULT_SETTINGS_PATH;
+    const result = await this.github.repos.getContent({ owner, repo, path });
+    return yaml.safeLoad(Buffer.from(result.data.content, 'base64').toString()) || {};
+  } catch (err) {
+    return {};
+  }
+}
+
 function getReporter(context) {
   const { owner } = context.repo();
   return reporters[owner];
 }
 
-function addReporter(github, installation) {
+async function addReporter(github, installation) {
   const id = installation.account.login;
   if (reporters[id] == null) {
-    reporters[id] = new Reporter(github, installation);
+    const config = await loadConfig(installation.account);
+    reporters[id] = new Reporter(github, installation, config);
   }
 }
 
