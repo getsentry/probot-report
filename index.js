@@ -1,34 +1,10 @@
-const yaml = require('js-yaml');
 const Reporter = require('./lib/reporter');
-
-/**
- * Default repository to look for organization-wide settings.
- * Can be overridden with the SETTINGS_REPO environment variable.
- */
-const DEFAULT_SETTINGS_REPO = 'probot-settings';
-
-/**
- * Default path of the config file within the settings repo.
- * Can be overridden with the SETTINGS_PATH environment variable.
- */
-const DEFAULT_SETTINGS_PATH = '.github/report.yml';
+const Config = require('./lib/config');
 
 /**
  * Global registry of reporters for each installation.
  */
 const reporters = {};
-
-async function loadConfig(account) {
-  try {
-    const owner = account.login;
-    const repo = process.env.SETTINGS_REPO || DEFAULT_SETTINGS_REPO;
-    const path = process.env.SETTINGS_PATH || DEFAULT_SETTINGS_PATH;
-    const result = await this.github.repos.getContent({ owner, repo, path });
-    return yaml.safeLoad(Buffer.from(result.data.content, 'base64').toString()) || {};
-  } catch (err) {
-    return {};
-  }
-}
 
 function getReporter(context) {
   const { owner } = context.repo();
@@ -38,7 +14,8 @@ function getReporter(context) {
 async function addReporter(github, installation) {
   const id = installation.account.login;
   if (reporters[id] == null) {
-    const config = await loadConfig(installation.account);
+    const config = await Config.loadConfig(github, installation.account);
+    Config.writeConfig(github, installation.account, config);
     reporters[id] = new Reporter(github, installation, config);
   }
 }
