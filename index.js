@@ -1,4 +1,7 @@
+const moment = require('moment');
 const yaml = require('js-yaml');
+
+const defaults = require('./defaults');
 
 /**
  * Installation target type: User
@@ -14,7 +17,7 @@ class Reporter {
   constructor(github, installation) {
     this.github = github;
     this.installation = installation;
-    //this.setupUsers();
+    this.setupUsers();
     this.setupConfig();
   }
 
@@ -23,7 +26,7 @@ class Reporter {
       owner: 'getsentry',
       repo: 'sentry-probot',
     });
-    this.config = Object.assign({}, require('./defaults'), this.config);
+    this.config = Object.assign({}, defaults, this.config);
     console.log(this.config);
     // TODO(hazat): This is async so we don't have to config right away
   }
@@ -43,9 +46,39 @@ class Reporter {
     return {};
   }
 
-  async getUserDetails(user) {
+  async getDetailsFor(user) {
     const response = await this.github.users.getById({ id: user.id });
     return response.data;
+  }
+
+  async getLastCommitForUser(user) {
+    const params = {
+      q: `committer:${user.login}`,
+      sort: 'committer-date',
+      order: 'desc',
+      per_page: 1,
+    };
+
+    const response = await this.github.search.commits(params);
+    const item = response.data.items[0];
+    return item && item.commit;
+  }
+
+  async getTimeZoneForUser(user) {
+    const commit = await this.getLastCommitForUser(user);
+    if (!commit) {
+      return 0; // TODO: Default timezone offset
+    }
+
+    const committerDate = commit.committer.date;
+    return moment.parseZone(committerDate).utcOffset();
+  }
+
+  getPullRequestsForUser(user) {
+    const query = `is:pr is:open review-requested:${user.login}`;
+    const request = this.github.search.issues({ q: query, per_page: 100 });
+    return this.github.paginate(request, response => response.data);
+    // TODO: Filter PRs by staleness. Check if there is a search query filter for that
   }
 
   async addUser(user) {
@@ -58,12 +91,16 @@ class Reporter {
       return;
     }
 
-    const details = await this.getUserDetails(user);
+    const [details, timezone] = await Promise.all([
+      this.getDetailsFor(user),
+      this.getTimeZoneForUser(user),
+    ]);
 
     this.users[user.id] = {
       id: user.id,
       login: user.login,
       email: details.email,
+      timezone,
     };
 
     // TODO: Get and update timezone
@@ -91,13 +128,6 @@ class Reporter {
     } else {
       // TODO: Warn
     }
-  }
-
-  getPullRequestsByUser(user) {
-    const query = `is:pr is:open review-requested:${user.login}`;
-    const request = this.github.search.issues({ q: query, per_page: 100 });
-    return this.github.paginate(request, response => response.data);
-    // TODO: Filter PRs by staleness. Check if there is a search query filter for that
   }
 
   teardown() {

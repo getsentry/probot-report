@@ -12,6 +12,8 @@
     "test": "mocha && standard"
   },
   "dependencies": {
+    "js-yaml": "^3.10.0",
+    "moment": "^2.18.1",
     "probot": "^0.7.2"
   },
   "devDependencies": {
