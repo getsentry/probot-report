@@ -43,17 +43,29 @@ class Reporter {
     return {};
   }
 
-  addUser(user) {
+  async getUserDetails(user) {
+    const response = await this.github.users.getById({ id: user.id });
+    return response.data;
+  }
+
+  async addUser(user) {
     if (user.type !== TYPE_USER) {
+      // TODO: Warn
       return;
     }
+
+    if (this.users[user.id]) {
+      return;
+    }
+
+    const details = await this.getUserDetails(user);
 
     this.users[user.id] = {
       id: user.id,
       login: user.login,
+      email: details.email,
     };
 
-    // TODO: Get and update email addresses
     // TODO: Get and update timezone
     // TODO: Get notification schedule
     // TODO: Schedule notifications for this user
@@ -72,11 +84,12 @@ class Reporter {
 
     if (targetType === TYPE_ORGANIZATION) {
       const request = this.github.orgs.getMembers({ org: account.login, per_page: 100 });
+      // TODO: Looks like addUser is not executed in parallel
       this.github.paginate(request, result => result.data.forEach(user => this.addUser(user)));
     } else if (targetType === TYPE_USER) {
       this.addUser(account);
     } else {
-      // TODO: Log a warning
+      // TODO: Warn
     }
   }
 
@@ -94,15 +107,20 @@ class Reporter {
 
 const reporters = {};
 
-async function addInstallation(github, installation) {
-  const id = installation.account.id;
+function getReporter(context) {
+  const { owner } = context.repo();
+  return reporters[owner];
+}
+
+function addReporter(github, installation) {
+  const id = installation.account.login;
   if (reporters[id] == null) {
     reporters[id] = new Reporter(github, installation);
   }
 }
 
-async function removeInstallation(installation) {
-  const id = installation.account.id;
+function removeReporter(installation) {
+  const id = installation.account.login;
   const reporter = reporters[id];
   if (reporter) {
     reporter.teardown();
@@ -116,19 +134,31 @@ async function setupRobot(robot) {
   github.paginate(github.apps.getInstallations({ per_page: 100 }), (result) => {
     result.data.forEach(async (installation) => {
       const installationGithub = await robot.auth(installation.id);
-      addInstallation(installationGithub, installation);
+      addReporter(installationGithub, installation);
     });
   });
 
-  robot.on('installation.created', async (context) => {
-    addInstallation(context.github, context.payload.installation);
+  robot.on('installation.created', (context) => {
+    addReporter(context.github, context.payload.installation);
   });
 
-  robot.on('installation.deleted', async (context) => {
-    removeInstallation(context.payload.installation);
+  robot.on('installation.deleted', (context) => {
+    removeReporter(context.payload.installation);
   });
 
-  // TODO(ja): Listen for new PR review requests...
+  robot.on('member.added', (context) => {
+    const reporter = getReporter(context);
+    if (reporter) {
+      reporter.addUser(context.payload.member);
+    }
+  });
+
+  robot.on('member.removed', (context) => {
+    const reporter = getReporter(context);
+    if (reporter) {
+      reporter.removeUser(context.payload.member);
+    }
+  });
 }
 
 module.exports = setupRobot;
