@@ -1,3 +1,5 @@
+const yaml = require('js-yaml');
+
 /**
  * Installation target type: User
  */
@@ -12,8 +14,33 @@ class Reporter {
   constructor(github, installation) {
     this.github = github;
     this.installation = installation;
+    //this.setupUsers();
+    this.setupConfig();
+  }
 
-    this.setupUsers();
+  async setupConfig() {
+    this.config = await this.getConfig({
+      owner: 'getsentry',
+      repo: 'sentry-probot',
+    });
+    this.config = Object.assign({}, require('./defaults'), this.config);
+    console.log(this.config);
+    // TODO(hazat): This is async so we don't have to config right away
+  }
+
+  async getConfig(configRepo) {
+    try {
+      const res = await this.github.repos.getContent({
+        owner: configRepo.owner,
+        repo: configRepo.repo,
+        path: '.github/config.yml',
+      });
+      const config = yaml.safeLoad(Buffer.from(res.data.content, 'base64').toString()) || {};
+      return Object.assign({}, config);
+    } catch (err) {
+      // TODO(hazat): Throw error
+    }
+    return {};
   }
 
   addUser(user) {
