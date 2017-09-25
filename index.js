@@ -1,10 +1,20 @@
 const Reporter = require('./lib/reporter');
-const { loadConfig } = require('./lib/config');
+const { loadConfig, writeConfig } = require('./lib/config');
+const Mailer = require('./lib/mailer');
 
 /**
  * Global registry of reporters for each installation.
  */
 const reporters = {};
+
+function sendReport(mailer, user, pullRequests) {
+  // TODO: DRY RUN
+  // TODO: Send slack here
+
+  if (user.email) {
+    mailer.send(user, pullRequests);
+  }
+}
 
 function getReporter(context) {
   const { owner } = context.repo();
@@ -15,7 +25,10 @@ async function addReporter(github, installation) {
   const id = installation.account.login;
   if (reporters[id] == null) {
     const config = await loadConfig(github, installation.account);
-    reporters[id] = new Reporter(github, installation, config);
+    const mailer = new Mailer(config.transports.email);
+    reporters[id] = new Reporter(github, installation, config)
+      .onConfigChange(newConfig => writeConfig(github, installation.account, newConfig))
+      .onReport((user, prs) => sendReport(mailer, user, prs));
   }
 }
 
