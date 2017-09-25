@@ -6,8 +6,8 @@
   "license": "BSD-3-Clause",
   "repository": "https://github.com/getsentry/probot-report.git",
   "scripts": {
-    "fix": "eslint . --fix",
-    "lint": "eslint .",
+    "fix": "eslint lib --fix",
+    "lint": "eslint lib",
     "start": "probot run ./index.js",
     "test": "mocha && standard"
   },
