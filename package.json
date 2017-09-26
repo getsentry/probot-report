@@ -1,6 +1,6 @@
 {
   "name": "probot-report",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Sends out periodic reports via email",
   "author": "Jan Michael Auer <jan.auer@sentry.io>",
   "license": "BSD-3-Clause",
