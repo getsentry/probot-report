@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "botkit": "^0.6.2",
+    "dryrun": "^1.0.0",
     "js-yaml": "^3.10.0",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
