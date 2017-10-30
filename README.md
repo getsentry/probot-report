@@ -4,6 +4,8 @@
 
 ![](https://user-images.githubusercontent.com/1433023/32178159-57580bd0-bd8c-11e7-9dfd-995ff69d446b.png)
 
+**Disclaimer: This report Bot is heavily focused on our setup, so in order to use it you probably need to fork it or help us make it more general purpose.**
+
 ## Usage
 
 The bot is activated by the file `.github/report.yml` in the settings
