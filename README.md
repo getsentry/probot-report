@@ -2,6 +2,8 @@
 
 > a GitHub App built with [probot](https://github.com/probot/probot) that sends out periodic reports
 
+![](https://user-images.githubusercontent.com/1433023/32178159-57580bd0-bd8c-11e7-9dfd-995ff69d446b.png)
+
 ## Setup
 
 ```
