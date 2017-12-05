@@ -134,12 +134,38 @@ are set:
 
 Then, install dependencies and run the bot with:
 
-```
+```sh
 # Install dependencies
-npm install
+yarn
 
 # Run the bot
-npm start
+yarn start
+
+# Run test watchers
+yarn test:watch
+```
+
+We highly recommend to use VSCode and install the recommended extensions. They
+will configure your IDE to match the coding style, invoke auto formatters every
+time you save and run tests in the background for you. No need to run the
+watchers manually.
+
+### Testing
+
+The bot includes an automated test suite that includes unit tests, linting and
+formating checks. Additionally, this command generates a coverage report in
+`coverage/`. You can run it with npm:
+
+```sh
+yarn test
+```
+
+We use [prettier](https://prettier.io/) for auto-formatting and
+[eslint](https://eslint.org/) as linter. Both tools can automatically fix most
+issues for you. To invoke them, simply run:
+
+```sh
+yarn fix
 ```
 
 ## Deployment
