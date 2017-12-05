@@ -1,4 +1,9 @@
-sudo: false
 language: node_js
+cache: yarn
+
+git:
+  depth: 1
+
 node_js:
-  - "7.10.1"
+  - "8"
+  - "9"
