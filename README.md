@@ -1,10 +1,12 @@
 # Probot: Report
 
-> a GitHub App built with [probot](https://github.com/probot/probot) that sends out periodic reports
+> a GitHub App built with [probot](https://github.com/probot/probot) that sends
+> out periodic reports
 
 ![](https://user-images.githubusercontent.com/1433023/32178159-57580bd0-bd8c-11e7-9dfd-995ff69d446b.png)
 
-**Disclaimer: This report Bot is heavily focused on our setup, so in order to use it you probably need to fork it or help us make it more general purpose.**
+**Disclaimer: This report Bot is heavily focused on our setup, so in order to
+use it you probably need to fork it or help us make it more general purpose.**
 
 ## Usage
 
@@ -87,10 +89,11 @@ root and adjust all environment variables.
 
 ### Github App
 
-First, create a GitHub App by following the instructions [here](https://probot.github.io/docs/deployment/#create-the-github-app).
-Then, make sure to download the private key and place it in the root directory
-of this application or set it via the `PRIVATE_KEY` environment variable.
-Finally, set the following environment variables:
+First, create a GitHub App by following the instructions
+[here](https://probot.github.io/docs/deployment/#create-the-github-app). Then,
+make sure to download the private key and place it in the root directory of this
+application or set it via the `PRIVATE_KEY` environment variable. Finally, set
+the following environment variables:
 
 | Name             | Description                                          |
 | ---------------- | ---------------------------------------------------- |
@@ -103,17 +106,18 @@ If not configured otherwise, it defaults to `probot-settings`.
 
 ### Sendgrid mailing
 
-The bot can send report emails to all organization members with configured email addresses (defaulting to their public email address). This requires a
-[Sendgrid](https://sendgrid.com/) account. Once created, configure the API
-token as `SENDGRID_TOKEN` environment variable.
+The bot can send report emails to all organization members with configured email
+addresses (defaulting to their public email address). This requires a
+[Sendgrid](https://sendgrid.com/) account. Once created, configure the API token
+as `SENDGRID_TOKEN` environment variable.
 
 Leave this value empty to skip report emails.
 
 ### Slack
 
-The bot can connect to a Slack team and send summaries there. To do so, it
-needs to be registered as Slack bot. Once it has been created, configure its
-token in the `SLACK_TOKEN` environment variable.
+The bot can connect to a Slack team and send summaries there. To do so, it needs
+to be registered as Slack bot. Once it has been created, configure its token in
+the `SLACK_TOKEN` environment variable.
 
 Leave this value empty to skip connection to Slack.
 
@@ -140,16 +144,18 @@ npm start
 
 ## Deployment
 
-If you would like to run your own instance of this app, see the [docs for deployment](https://probot.github.io/docs/deployment/).
+If you would like to run your own instance of this app, see the
+[docs for deployment](https://probot.github.io/docs/deployment/).
 
 This app requires these **Permissions** for the GitHub App:
 
- - **Repository contents**: Read & write
- - **Organization members**: Read-only
+* **Repository contents**: Read & write
+* **Organization members**: Read-only
 
 Also, the following **Events** need to be subscribed:
 
- - **Push**: Git push to a repository
- - **Membership**: Team membership added or removed
+* **Push**: Git push to a repository
+* **Membership**: Team membership added or removed
 
-Also, make sure all required environment variables are present in the production environment.
+Also, make sure all required environment variables are present in the production
+environment.
