@@ -25,7 +25,7 @@
     "node-schedule": "^1.2.5",
     "nodemailer": "^4.4.0",
     "nodemailer-sendgrid-transport": "^0.2.0",
-    "probot": "^0.11.0"
+    "probot": "^3.0.3"
   },
   "devDependencies": {
     "eslint": "^4.12.1",
