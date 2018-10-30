@@ -17,7 +17,7 @@
     "test:watch": "jest --watch --notify"
   },
   "dependencies": {
-    "botkit": "^0.6.7",
+    "botkit": "^0.6.11",
     "dryrun": "^1.0.2",
     "js-yaml": "^3.10.0",
     "lodash": "^4.17.4",
