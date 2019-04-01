@@ -19,7 +19,7 @@
   "dependencies": {
     "botkit": "^0.6.11",
     "dryrun": "^1.0.2",
-    "js-yaml": "^3.10.0",
+    "js-yaml": "^3.13.0",
     "lodash": "^4.17.4",
     "moment": "^2.19.3",
     "node-schedule": "^1.2.5",
