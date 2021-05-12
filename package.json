@@ -23,7 +23,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.19.3",
     "node-schedule": "^1.2.5",
-    "nodemailer": "^4.4.0",
+    "nodemailer": "^6.4.16",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "probot": "^0.11.0"
   },
