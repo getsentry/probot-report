@@ -14,7 +14,9 @@
     "test:eslint": "eslint lib",
     "test:prettier": "prettier-check 'lib/**/*.js'",
     "test": "npm-run-all test:jest test:eslint test:prettier",
-    "test:watch": "jest --watch --notify"
+    "test:watch": "jest --watch --notify",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "botkit": "^0.6.11",
@@ -25,7 +27,8 @@
     "node-schedule": "^1.2.5",
     "nodemailer": "^4.4.0",
     "nodemailer-sendgrid-transport": "^0.2.0",
-    "probot": "^0.11.0"
+    "probot": "^0.11.0",
+    "snyk": "^1.83.0"
   },
   "devDependencies": {
     "eslint": "^4.12.1",
@@ -40,5 +43,6 @@
   },
   "engines": {
     "node": ">= 8"
-  }
+  },
+  "snyk": true
 }
